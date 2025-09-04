@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VidyaKul: The Learning Adventure</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a friendly look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to enhance the look and feel */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+        }
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .subject-card:hover {
+            border-color: #3b82f6; /* Blue border on hover */
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .option-btn {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background-color: #f9fafb;
+            border-color: #3b82f6;
+        }
+        .option-btn.selected {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        .option-btn.correct {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            color: #166534;
+        }
+        .option-btn.incorrect {
+            background-color: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        /* Page transition animation */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-4 max-w-4xl min-h-screen flex flex-col">
+
+        <!-- Header -->
+        <header class="bg-white rounded-xl shadow-md p-4 mb-6 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-blue-600">VidyaKul ✨</h1>
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <p id="studentName" class="font-semibold">Student Name</p>
+                    <p id="studentPoints" class="text-sm text-gray-500">🌟 0 Points</p>
+                </div>
+                <img src="https://placehold.co/50x50/3b82f6/ffffff?text=S" alt="Avatar" class="rounded-full w-12 h-12 border-2 border-blue-500">
+            </div>
+        </header>
+
+        <!-- Dynamic Content Area -->
+        <main class="flex-grow">
+            <!-- Page 1: Dashboard -->
+            <div id="dashboardPage" class="page" style="display: block;">
+                <div class="bg-white p-6 rounded-xl shadow-md text-center">
+                    <h2 class="text-2xl font-bold mb-2">Welcome to Your Learning Adventure!</h2>
+                    <p class="text-gray-600 mb-6">Choose a subject to start learning and earning points.</p>
+                    <button onclick="navigateTo('subjectsPage')" class="btn-primary font-bold py-3 px-8 rounded-full text-lg shadow-lg">
+                        Let's Begin!
+                    </button>
+                </div>
+
+                <!-- Progress & Rewards Section -->
+                <div class="mt-8">
+                    <h3 class="text-xl font-bold mb-4">Your Progress</h3>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <p class="mb-2">Overall Progress</p>
+                        <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                            <div id="progressBar" class="bg-green-500 h-4 rounded-full" style="width: 10%;"></div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-4 mt-6">Rewards</h3>
+                        <div class="flex justify-around items-center text-center">
+                            <div class="reward-item">
+                                <p class="text-4xl">🥉</p>
+                                <p class="font-semibold mt-1">Bronze Badge</p>
+                                <p class="text-sm text-gray-500">(100 Points)</p>
+                            </div>
+                             <div class="reward-item opacity-50">
+                                <p class="text-4xl">🥈</p>
+                                <p class="font-semibold mt-1">Silver Badge</p>
+                                <p class="text-sm text-gray-500">(500 Points)</p>
+                            </div>
+                             <div class="reward-item opacity-50">
+                                <p class="text-4xl">🥇</p>
+                                <p class="font-semibold mt-1">Gold Badge</p>
+                                <p class="text-sm text-gray-500">(1000 Points)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2: Subjects -->
+            <div id="subjectsPage" class="page">
+                <div class="flex justify-between items-center mb-6">
+                     <h2 class="text-2xl font-bold">Choose a Subject</h2>
+                     <button onclick="navigateTo('dashboardPage')" class="text-blue-500 hover:underline">&larr; Back to Dashboard</button>
+                </div>
+                <div id="subjectList" class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    <!-- Subjects will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Page 3: Quiz -->
+            <div id="quizPage" class="page">
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 id="quizTitle" class="text-xl md:text-2xl font-bold">Quiz Time!</h2>
+                        <button onclick="navigateTo('subjectsPage')" class="text-blue-500 hover:underline">&larr; Change Subject</button>
+                    </div>
+                    <div id="quizContent">
+                        <p id="questionNumber" class="text-sm text-gray-500 mb-2">Question 1 of 5</p>
+                        <p id="questionText" class="text-lg font-semibold mb-6">What is the capital of Odisha?</p>
+                        <div id="optionsContainer" class="space-y-3">
+                            <!-- Options will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    <div id="quizFeedback" class="mt-6 text-center" style="display: none;">
+                        <p id="feedbackText" class="font-bold"></p>
+                        <button id="nextQuestionBtn" onclick="nextQuestion()" class="mt-4 btn-primary font-bold py-2 px-6 rounded-full">Next Question</button>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Page 4: Quiz Results -->
+            <div id="resultsPage" class="page">
+                <div class="bg-white p-8 rounded-xl shadow-md text-center">
+                    <h2 class="text-3xl font-bold mb-4">Quiz Complete!</h2>
+                    <p class="text-5xl mb-4">🎉</p>
+                    <p class="text-lg text-gray-700">You scored:</p>
+                    <p id="finalScore" class="text-4xl font-bold my-2 text-green-600">4 out of 5</p>
+                    <p id="pointsEarned" class="text-lg text-yellow-500 font-semibold mb-6">🌟 You earned 40 points!</p>
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="restartQuiz()" class="bg-blue-100 text-blue-700 font-bold py-3 px-6 rounded-full">Play Again</button>
+                        <button onclick="navigateTo('subjectsPage')" class="btn-primary font-bold py-3 px-6 rounded-full">Choose Another Subject</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center text-sm text-gray-500 mt-8 py-4">
+            <p>SIH 2025 Submission | Team Name</p>
+            <p>Gamified Learning Platform for Rural Education | Government of Odisha</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        // In a real app, this data would come from a server.
+        // For this prototype, we'll keep it simple.
+        const student = {
+            name: "Sunita",
+            points: 0,
+            progress: 10 // initial progress
+        };
+
+        const subjects = [
+            { id: 'math', name: 'Mathematics', icon: '➗', color: 'bg-blue-100', quiz: [
+                { q: "What is 2 + 2?", o: ["3", "4", "5", "6"], a: "4" },
+                { q: "What is 10 * 5?", o: ["40", "45", "50", "55"], a: "50" },
+                { q: "What is 9 / 3?", o: ["1", "2", "3", "4"], a: "3" },
+                { q: "What is the next number in the series: 2, 4, 6, 8, ...?", o: ["9", "10", "12", "14"], a: "10" },
+                { q: "How many sides does a triangle have?", o: ["3", "4", "5", "6"], a: "3" },
+            ]},
+            { id: 'science', name: 'Science', icon: '🔬', color: 'bg-green-100', quiz: [
+                { q: "What is H2O?", o: ["Salt", "Air", "Water", "Sugar"], a: "Water" },
+                { q: "Which planet is known as the Red Planet?", o: ["Earth", "Mars", "Jupiter", "Venus"], a: "Mars" },
+                { q: "What do plants need for photosynthesis?", o: ["Sunlight", "Moonlight", "Water", "Both Sunlight and Water"], a: "Both Sunlight and Water" },
+                { q: "The Earth revolves around the...?", o: ["Moon", "Mars", "Sun", "Stars"], a: "Sun" },
+                { q: "Which is the largest animal on Earth?", o: ["Elephant", "Blue Whale", "Giraffe", "Shark"], a: "Blue Whale" },
+            ]},
+            { id: 'english', name: 'English', icon: '📚', color: 'bg-yellow-100', quiz: [
+                { q: "What is the opposite of 'happy'?", o: ["Joyful", "Sad", "Angry", "Excited"], a: "Sad" },
+                { q: "Which of these is a vowel?", o: ["B", "C", "D", "E"], a: "E" },
+                { q: "What is the plural of 'child'?", o: ["Childs", "Children", "Childes", "Childer"], a: "Children" },
+                { q: "Complete the sentence: An apple a day keeps the ______ away.", o: ["friend", "teacher", "doctor", "family"], a: "doctor" },
+                { q: "Which word is a noun?", o: ["Run", "Quickly", "Book", "Beautiful"], a: "Book" },
+            ]},
+            { id: 'history', name: 'History', icon: '🏛️', color: 'bg-red-100', quiz: [
+                { q: "Who is known as the 'Father of the Nation' in India?", o: ["Jawaharlal Nehru", "Sardar Patel", "Mahatma Gandhi", "Subhas Chandra Bose"], a: "Mahatma Gandhi" },
+                { q: "When did India get its independence?", o: ["1945", "1947", "1950", "1952"], a: "1947" },
+                { q: "The Taj Mahal was built by which Mughal Emperor?", o: ["Akbar", "Humayun", "Shah Jahan", "Aurangzeb"], a: "Shah Jahan" },
+                { q: "What is the capital of Odisha?", o: ["Cuttack", "Puri", "Bhubaneswar", "Rourkela"], a: "Bhubaneswar" },
+                { q: "Who wrote the Indian National Anthem?", o: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Sarojini Naidu", "Swami Vivekananda"], a: "Rabindranath Tagore" },
+            ]},
+        ];
+
+        let currentQuiz = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOptionElement = null;
+
+        // --- APPLICATION LOGIC ---
+
+        // Function to navigate between pages
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.style.display = 'none';
+            });
+            document.getElementById(pageId).style.display = 'block';
+        }
+       
+        // Function to update user info on the screen
+        function updateUserInfo() {
+            document.getElementById('studentName').textContent = student.name;
+            document.getElementById('studentPoints').textContent = `🌟 ${student.points} Points`;
+            document.getElementById('progressBar').style.width = `${student.progress}%`;
+        }
+
+        // Function to load subjects onto the subjects page
+        function loadSubjects() {
+            const subjectList = document.getElementById('subjectList');
+            subjectList.innerHTML = ''; // Clear existing subjects
+            subjects.forEach(subject => {
+                const card = document.createElement('div');
+                card.className = `card subject-card ${subject.color} p-4 rounded-xl text-center cursor-pointer border-2 border-transparent`;
+                card.onclick = () => startQuiz(subject.id);
+                card.innerHTML = `
+                    <p class="text-5xl mb-2">${subject.icon}</p>
+                    <p class="font-bold text-lg">${subject.name}</p>
+                `;
+                subjectList.appendChild(card);
+            });
+        }
+       
+        // Function to start a quiz
+        function startQuiz(subjectId) {
+            currentQuiz = subjects.find(s => s.id === subjectId).quiz;
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('quizTitle').textContent = `Quiz: ${subjects.find(s => s.id === subjectId).name}`;
+            loadQuestion();
+            navigateTo('quizPage');
+        }
+
+        // Function to load the current question and options
+        function loadQuestion() {
+            // Reset feedback and button state
+            document.getElementById('quizFeedback').style.display = 'none';
+            selectedOptionElement = null;
+
+            if (currentQuestionIndex < currentQuiz.length) {
+                const question = currentQuiz[currentQuestionIndex];
+                document.getElementById('questionNumber').textContent = `Question ${currentQuestionIndex + 1} of ${currentQuiz.length}`;
+                document.getElementById('questionText').textContent = question.q;
+               
+                const optionsContainer = document.getElementById('optionsContainer');
+                optionsContainer.innerHTML = '';
+                question.o.forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.className = 'option-btn w-full text-left p-4 rounded-lg font-semibold';
+                    button.textContent = optionText;
+                    button.onclick = () => selectOption(button, optionText, question.a);
+                    optionsContainer.appendChild(button);
+                });
+            } else {
+                // End of quiz
+                showResults();
+            }
+        }
+       
+        // Function to handle option selection
+        function selectOption(btnElement, selectedAnswer, correctAnswer) {
+            // Prevent selecting another option
+            if (selectedOptionElement) return;
+
+            selectedOptionElement = btnElement;
+           
+            // Visually mark the selected option
+            document.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
+            btnElement.classList.add('selected');
+
+            // Show feedback
+            const feedbackText = document.getElementById('feedbackText');
+            const feedbackContainer = document.getElementById('quizFeedback');
+           
+            if (selectedAnswer === correctAnswer) {
+                feedbackText.textContent = "Correct! 🎉";
+                feedbackText.className = "font-bold text-green-600";
+                btnElement.classList.add('correct');
+                score++;
+            } else {
+                feedbackText.textContent = `Not quite! The correct answer was: ${correctAnswer}`;
+                feedbackText.className = "font-bold text-red-600";
+                btnElement.classList.add('incorrect');
+                // Highlight the correct answer
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    if(btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+            feedbackContainer.style.display = 'block';
+        }
+
+        // Function to move to the next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // Function to show the final results
+        function showResults() {
+            const pointsEarned = score * 10;
+            student.points += pointsEarned;
+            student.progress += score * 2; // Increase progress
+            if (student.progress > 100) student.progress = 100;
+
+            document.getElementById('finalScore').textContent = `${score} out of ${currentQuiz.length}`;
+            document.getElementById('pointsEarned').textContent = `🌟 You earned ${pointsEarned} points!`;
+            updateUserInfo();
+            navigateTo('resultsPage');
+        }
+
+        // Function to restart the current quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+            navigateTo('quizPage');
+        }
+
+        // --- INITIALIZATION ---
+        // This runs when the page first loads
+        window.onload = () => {
+            updateUserInfo();
+            loadSubjects();
+        };
+
+    </script>
+
+</body>
+</html>
